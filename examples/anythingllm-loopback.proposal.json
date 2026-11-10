@@ -1,0 +1,46 @@
+{
+  "$schema": "https://raw.githubusercontent.com/NOT-ME-etnom/omnichat-connector-kit/main/schema/provider-configuration-proposal.schema.json",
+  "schemaVersion": "1.0",
+  "documentType": "omnichat-provider-configuration-proposal",
+  "target": {
+    "application": "OMNICHAT",
+    "interface": "manual-connections-ui",
+    "importSupported": false,
+    "manualEntryRequired": true
+  },
+  "providerIdentity": {
+    "id": "anythingllm",
+    "kind": "anythingLLM",
+    "displayName": "AnythingLLM"
+  },
+  "editableConfiguration": {
+    "model": "workspace-slug",
+    "baseURL": "http://127.0.0.1:3001/api/v1/openai",
+    "isEnabled": false,
+    "isWorkhorse": false,
+    "supportedTasks": ["general", "research", "longContext", "critique", "extraction"],
+    "hyperparameters": {
+      "temperature": 0.2,
+      "topP": 0.9,
+      "maxOutputTokens": 4096,
+      "reasoningEffort": null,
+      "verbosity": null
+    },
+    "inputCostPerMillion": null,
+    "outputCostPerMillion": null
+  },
+  "credential": {
+    "required": true,
+    "entryMethod": "owner-enters-in-omnichat",
+    "secretValue": null
+  },
+  "verification": {
+    "status": null,
+    "highestVerifiedStage": null,
+    "checkedAt": null,
+    "evidence": []
+  },
+  "unknowns": ["workspace slug", "Developer API access", "effective upstream model pricing"],
+  "sources": [],
+  "notes": ["The owner enters the Developer API key directly in OMNICHAT, never in this file."]
+}

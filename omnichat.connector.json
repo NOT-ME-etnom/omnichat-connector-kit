@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "documentType": "omnichat-connector-kit-metadata",
+  "target": {
+    "application": "OMNICHAT",
+    "minimumVersion": "1.0.0",
+    "direction": "outbound-from-omnichat",
+    "inboundAPI": false,
+    "automaticImport": false,
+    "manualEntryRequired": true
+  },
+  "supportedProviderKinds": [
+    "codexLocal",
+    "openAI",
+    "gemini",
+    "anthropic",
+    "deepSeek",
+    "openRouter",
+    "huggingFace",
+    "ollama",
+    "anythingLLM",
+    "compatible"
+  ],
+  "handoffDocument": "CONNECT_TO_OMNICHAT.md",
+  "proposalSchema": "schema/provider-configuration-proposal.schema.json",
+  "credentialPolicy": {
+    "transport": "human-entry-only",
+    "storage": "macOS Keychain",
+    "secretValuesAllowed": false
+  }
+}

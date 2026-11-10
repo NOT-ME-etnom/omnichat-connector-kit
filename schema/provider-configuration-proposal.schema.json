@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/NOT-ME-etnom/omnichat-connector-kit/main/schema/provider-configuration-proposal.schema.json",
+  "title": "OMNICHAT provider configuration proposal",
+  "description": "A credential-free, manually reviewed proposal. OMNICHAT 1.0 does not import this document.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "documentType",
+    "target",
+    "providerIdentity",
+    "editableConfiguration",
+    "credential",
+    "verification",
+    "unknowns",
+    "sources"
+  ],
+  "properties": {
+    "$schema": { "const": "https://raw.githubusercontent.com/NOT-ME-etnom/omnichat-connector-kit/main/schema/provider-configuration-proposal.schema.json" },
+    "schemaVersion": { "const": "1.0" },
+    "documentType": { "const": "omnichat-provider-configuration-proposal" },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["application", "interface", "importSupported", "manualEntryRequired"],
+      "properties": {
+        "application": { "const": "OMNICHAT" },
+        "interface": { "const": "manual-connections-ui" },
+        "importSupported": { "const": false },
+        "manualEntryRequired": { "const": true }
+      }
+    },
+    "providerIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "displayName"],
+      "properties": {
+        "id": {
+          "enum": ["codex", "openai", "gemini", "anthropic", "deepseek", "openrouter", "huggingface", "ollama", "anythingllm", "compatible"]
+        },
+        "kind": {
+          "enum": ["codexLocal", "openAI", "gemini", "anthropic", "deepSeek", "openRouter", "huggingFace", "ollama", "anythingLLM", "compatible"]
+        },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 100 }
+      },
+      "oneOf": [
+        { "properties": { "id": { "const": "codex" }, "kind": { "const": "codexLocal" }, "displayName": { "const": "Codex local" } } },
+        { "properties": { "id": { "const": "openai" }, "kind": { "const": "openAI" }, "displayName": { "const": "OpenAI" } } },
+        { "properties": { "id": { "const": "gemini" }, "kind": { "const": "gemini" }, "displayName": { "const": "Gemini" } } },
+        { "properties": { "id": { "const": "anthropic" }, "kind": { "const": "anthropic" }, "displayName": { "const": "Claude (Anthropic)" } } },
+        { "properties": { "id": { "const": "deepseek" }, "kind": { "const": "deepSeek" }, "displayName": { "const": "DeepSeek" } } },
+        { "properties": { "id": { "const": "openrouter" }, "kind": { "const": "openRouter" }, "displayName": { "const": "OpenRouter" } } },
+        { "properties": { "id": { "const": "huggingface" }, "kind": { "const": "huggingFace" }, "displayName": { "const": "Hugging Face" } } },
+        { "properties": { "id": { "const": "ollama" }, "kind": { "const": "ollama" }, "displayName": { "const": "Ollama local" } } },
+        { "properties": { "id": { "const": "anythingllm" }, "kind": { "const": "anythingLLM" }, "displayName": { "const": "AnythingLLM" } } },
+        { "properties": { "id": { "const": "compatible" }, "kind": { "const": "compatible" }, "displayName": { "const": "Endpoint compatible" } } }
+      ]
+    },
+    "editableConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model", "baseURL", "isEnabled", "isWorkhorse", "supportedTasks", "hyperparameters", "inputCostPerMillion", "outputCostPerMillion"],
+      "properties": {
+        "model": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "baseURL": {
+          "oneOf": [
+            { "type": "string", "format": "uri", "maxLength": 2048 },
+            { "type": "null" }
+          ]
+        },
+        "isEnabled": { "const": false },
+        "isWorkhorse": { "const": false },
+        "supportedTasks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["general", "coding", "research", "longContext", "creative", "critique", "extraction", "privateLocal"]
+          }
+        },
+        "hyperparameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["temperature", "topP", "maxOutputTokens", "reasoningEffort", "verbosity"],
+          "properties": {
+            "temperature": { "type": ["number", "null"], "minimum": 0, "maximum": 2 },
+            "topP": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+            "maxOutputTokens": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+            "reasoningEffort": { "enum": [null, "none", "low", "medium", "high", "xhigh", "max"] },
+            "verbosity": { "enum": [null, "low", "medium", "high"] }
+          }
+        },
+        "inputCostPerMillion": { "type": ["number", "null"], "minimum": 0 },
+        "outputCostPerMillion": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "credential": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "entryMethod", "secretValue"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "entryMethod": { "enum": ["owner-enters-in-omnichat", "codex-cli-session", "none"] },
+        "secretValue": { "type": "null" }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "highestVerifiedStage", "checkedAt", "evidence"],
+      "properties": {
+        "status": { "const": null },
+        "highestVerifiedStage": { "const": null },
+        "checkedAt": { "const": null },
+        "evidence": {
+          "type": "array",
+          "maxItems": 0,
+          "items": { "type": "string", "minLength": 1, "maxLength": 500 }
+        }
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 200 }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "url", "claim"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "url": { "type": "string", "format": "uri", "pattern": "^https://", "maxLength": 2048 },
+          "claim": { "type": "string", "minLength": 1, "maxLength": 500 }
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 500 }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "codexLocal" } }, "required": ["kind"] } } },
+      "then": {
+        "properties": {
+          "credential": { "properties": { "required": { "const": false }, "entryMethod": { "const": "codex-cli-session" } } },
+          "editableConfiguration": { "properties": { "baseURL": { "const": null } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "ollama" } }, "required": ["kind"] } } },
+      "then": {
+        "properties": {
+          "credential": { "properties": { "required": { "const": false }, "entryMethod": { "const": "none" } } },
+          "editableConfiguration": { "properties": { "baseURL": { "type": "string", "pattern": "^https?://(?:localhost|127\\.0\\.0\\.1|\\[::1\\])(?::[0-9]{1,5})?(?:/[^#\\s]*)?$" } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "anythingLLM" } }, "required": ["kind"] } } },
+      "then": {
+        "properties": {
+          "credential": { "properties": { "required": { "const": true }, "entryMethod": { "const": "owner-enters-in-omnichat" } } },
+          "editableConfiguration": { "properties": { "baseURL": { "type": "string", "pattern": "^https?://(?:localhost|127\\.0\\.0\\.1|\\[::1\\])(?::[0-9]{1,5})?(?:/[^#\\s]*)?$" } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "compatible" } }, "required": ["kind"] } } },
+      "then": {
+        "properties": {
+          "credential": { "properties": { "required": { "const": true }, "entryMethod": { "const": "owner-enters-in-omnichat" } } },
+          "editableConfiguration": { "properties": { "baseURL": { "type": "string", "pattern": "^(?:https://[^/@\\s]+(?::[0-9]{1,5})?(?:/[^#\\s]*)?|http://(?:localhost|127\\.0\\.0\\.1|\\[::1\\])(?::[0-9]{1,5})?(?:/[^#\\s]*)?)$" } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "enum": ["openAI", "gemini", "anthropic", "deepSeek", "openRouter", "huggingFace"] } }, "required": ["kind"] } } },
+      "then": { "properties": { "credential": { "properties": { "required": { "const": true }, "entryMethod": { "const": "owner-enters-in-omnichat" } } } } }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "openAI" } }, "required": ["kind"] } } },
+      "then": { "properties": { "editableConfiguration": { "properties": { "baseURL": { "type": "string", "pattern": "^https://api\\.openai\\.com(?::443)?(?:/[^#\\s]*)?$" } } } } }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "gemini" } }, "required": ["kind"] } } },
+      "then": { "properties": { "editableConfiguration": { "properties": { "baseURL": { "type": "string", "pattern": "^https://generativelanguage\\.googleapis\\.com(?::443)?(?:/[^#\\s]*)?$" } } } } }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "anthropic" } }, "required": ["kind"] } } },
+      "then": { "properties": { "editableConfiguration": { "properties": { "baseURL": { "type": "string", "pattern": "^https://api\\.anthropic\\.com(?::443)?(?:/[^#\\s]*)?$" } } } } }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "deepSeek" } }, "required": ["kind"] } } },
+      "then": { "properties": { "editableConfiguration": { "properties": { "baseURL": { "type": "string", "pattern": "^https://api\\.deepseek\\.com(?::443)?(?:/[^#\\s]*)?$" } } } } }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "openRouter" } }, "required": ["kind"] } } },
+      "then": { "properties": { "editableConfiguration": { "properties": { "baseURL": { "type": "string", "pattern": "^https://openrouter\\.ai(?::443)?(?:/[^#\\s]*)?$" } } } } }
+    },
+    {
+      "if": { "properties": { "providerIdentity": { "properties": { "kind": { "const": "huggingFace" } }, "required": ["kind"] } } },
+      "then": { "properties": { "editableConfiguration": { "properties": { "baseURL": { "type": "string", "pattern": "^https://router\\.huggingface\\.co(?::443)?(?:/[^#\\s]*)?$" } } } } }
+    }
+  ]
+}
